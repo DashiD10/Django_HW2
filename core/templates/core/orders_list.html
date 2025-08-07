@@ -1,0 +1,10 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1>Список записей</h1>
+    <div class="flex-container">
+        {% comment %} Проверка на пустую коллекцию empty{% endcomment %}
+        {% for order in orders %}
+        {% include "core/order_card.html" %}
+        {% endfor %}
+    </div> 
+{% endblock content %}
