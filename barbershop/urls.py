@@ -26,5 +26,5 @@ urlpatterns = [
     path('', views.landing, name='landing'),
     path('thanks/', views.thanks, name='thanks'),
     path('orders/', views.orders_list, name='orders_list'),
-    path('orders/<int:order_id>/', views.order_detail, name='order_detail'),
+    path('orders/<int:pk>/', views.order_detail, name='order_detail'),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

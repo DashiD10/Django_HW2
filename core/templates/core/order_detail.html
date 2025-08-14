@@ -1,46 +1,100 @@
-{% comment %} {
-        "id": 1,
-        "client_name": "Пётр 'Безголовый' Головин",
-        "services": ["Стрижка под 'Горшок'", "Полировка лысины до блеска"],
-        "master_id": 1,
-        "date": "2025-03-20",
-        "status": STATUS_NEW
-    } {% endcomment %}
+{% extends "core/base.html" %}
+{% load static %}
 
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title mb-0">Заявка №{{ order.id }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h5 class="card-subtitle mb-2 text-muted">Информация о клиенте</h5>
+                            <p><strong>Имя:</strong> {{ order.name }}</p>
+                            <p><strong>Телефон:</strong> {{ order.phone }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="card-subtitle mb-2 text-muted">Детали записи</h5>
+                            <p><strong>Дата и время:</strong> {{ order.appointment_date|date:"d.m.Y H:i" }}</p>
+                            <p><strong>Статус:</strong> 
+                                <span class="badge 
+                                    {% if order.status == 'new' %}bg-primary
+                                    {% elif order.status == 'confirmed' %}bg-warning
+                                    {% elif order.status == 'completed' %}bg-success
+                                    {% elif order.status == 'canceled' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Заказ №{{ order.id }}</title>
-</head>
-<body>
-    <h1>Заказ №{{ order.id }}</h1>
-    <p>Клиент: {{ order.client_name }}</p>
-    
-    {% comment %} Ветвление для статуса {% endcomment %}
+                    <div class="mb-3">
+                        <h5 class="card-subtitle mb-2 text-muted">Комментарий</h5>
+                        {% if order.comment %}
+                            <p>{{ order.comment }}</p>
+                        {% else %}
+                            <p class="text-muted">Комментарий отсутствует</p>
+                        {% endif %}
+                    </div>
 
-    {% if order.status == "новая" %}
-    <p style="color: green;">Статус: новая</p>
-    {% elif order.status == "подтвержденная" %}
-    <p style="color: orange;">Статус: подтвержденная</p>
-    {% elif order.status == "отмененная" %}
-    <p style="color: gray;">Статус: отмененная</p>
-    {% elif order.status == "выполненная" %}
-    <p style="color: green;">Статус:выполненная</p>
-    {% else %}
-    <p style="color: gold;">Статус: выполненная</p>
-    {% endif %}
+                    <div class="mb-3">
+                        <h5 class="card-subtitle mb-2 text-muted">Мастер</h5>
+                        {% if order.master %}
+                            <div class="d-flex align-items-center">
+                                {% if order.master.photo %}
+                                    <img src="{{ order.master.photo.url }}" alt="{{ order.master.name }}" class="rounded-circle me-3" width="60" height="60">
+                                {% endif %}
+                                <div>
+                                    <h6 class="mb-0">{{ order.master.name }}</h6>
+                                    <small class="text-muted">Стаж: {{ order.master.experience }} лет</small>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Мастер не назначен</p>
+                        {% endif %}
+                    </div>
 
-    <p>Услуги: </p>
-    <ul>
+                    <div class="mb-3">
+                        <h5 class="card-subtitle mb-2 text-muted">Услуги</h5>
+                        {% if order.master %}
+                            <div class="row">
+                                {% for service in order.master.services.all %}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="card">
+                                            <div class="card-body py-2">
+                                                <h6 class="card-title mb-1">{{ service.name }}</h6>
+                                                <p class="card-text mb-1">{{ service.description|truncatechars:50 }}</p>
+                                                <p class="text-muted mb-0"><strong>{{ service.price }} ₽</strong> - {{ service.duration }} мин</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <p class="text-muted">Услуги не назначены</p>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Услуги будут определены после назначения мастера</p>
+                        {% endif %}
+                    </div>
 
-        {% for service in order.services %}
-        <li>{{ service }}</li>
-        {% endfor %}
-    </ul>
-
-    <p>Моя переменная: {{ my_variable }}</p>
-</body>
-</html>
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            <p class="mb-0">Создано: {{ order.date_created|date:"d.m.Y H:i" }}</p>
+                            <p class="mb-0">Обновлено: {{ order.date_updated|date:"d.m.Y H:i" }}</p>
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'orders_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Назад к списку
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

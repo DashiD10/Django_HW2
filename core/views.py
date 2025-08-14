@@ -1,6 +1,6 @@
-from django.shortcuts import render, HttpResponse
-from .data import orders
-from .models import Master, Review
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Master, Review, Order
 
 def landing(request):
     masters = Master.objects.filter(is_active=True)[:6]  # Show first 6 active masters
@@ -14,19 +14,17 @@ def landing(request):
 def thanks(request):
     return render(request, 'core/thanks.html')
 
+@login_required
 def orders_list(request):
+    orders = Order.objects.all().order_by('-date_created')
     context = {
-        "orders": orders,  # Передаем список заказов в шаблон
+        "orders": orders,
     }
     return render(request, 'core/orders_list.html', context)
 
-def order_detail(request, order_id):
-    # Используем next() для поиска первого совпадения
-    order = next((order for order in orders if order["id"] == order_id), None)
-    
-    if order is None:
-        return HttpResponse("<h1>Заказ не найден</h1>", status=404)
-    
+@login_required
+def order_detail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
     context = {
         "order": order,
     }

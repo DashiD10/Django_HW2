@@ -1,10 +1,64 @@
 {% extends "core/base.html" %}
+{% load static %}
+
 {% block content %}
-<h1>Список записей</h1>
-    <div class="flex-container">
-        {% comment %} Проверка на пустую коллекцию empty{% endcomment %}
-        {% for order in orders %}
-        {% include "core/includes/order_card.html" %}
-        {% endfor %}
-    </div> 
+<div class="container mt-5">
+    <h1 class="mb-4">Список заявок</h1>
+    
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Клиент</th>
+                        <th>Телефон</th>
+                        <th>Мастер</th>
+                        <th>Дата записи</th>
+                        <th>Статус</th>
+                        <th>Дата создания</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.name }}</td>
+                        <td>{{ order.phone }}</td>
+                        <td>
+                            {% if order.master %}
+                                {{ order.master.name }}
+                            {% else %}
+                                <span class="text-muted">Не назначен</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ order.appointment_date|date:"d.m.Y H:i" }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if order.status == 'new' %}bg-primary
+                                {% elif order.status == 'confirmed' %}bg-warning
+                                {% elif order.status == 'completed' %}bg-success
+                                {% elif order.status == 'canceled' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ order.date_created|date:"d.m.Y H:i" }}</td>
+                        <td>
+                            <a href="{% url 'order_detail' order.pk %}" class="btn btn-sm btn-outline-primary">
+                                Подробнее
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Заявок пока нет.
+        </div>
+    {% endif %}
+</div>
 {% endblock content %}
