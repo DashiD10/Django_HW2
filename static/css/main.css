@@ -14,6 +14,11 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+.hero-section h1 {
+    color: #f8f9fa;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
 .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
