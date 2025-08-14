@@ -1,78 +1,74 @@
+/* Custom styles for barbershop */
+
+:root {
+    --primary-color: #dc3545;
+    --secondary-color: #6c757d;
+    --dark-color: #212529;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
+    font-family: 'Arial', sans-serif;
 }
- 
-h1 {
-    text-align: center;
-    color: #333;
+
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
- 
-.flex-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    padding: 20px;
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
- 
-.flex-card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 300px;
-    transition: transform 0.3s ease;
-}
- 
-.flex-card:hover {
+
+.card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
- 
-.flex-card h2 {
-    margin-top: 0;
-    color: #2c3e50;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+
+.master-card .card-img-top {
+    height: 250px;
+    object-fit: cover;
 }
- 
-.flex-card p {
-    margin: 10px 0;
+
+.review-card {
+    border-left: 4px solid var(--primary-color);
 }
- 
-.services {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 15px;
+
+.star-rating {
+    color: #ffc107;
 }
- 
-.service {
-    background-color: #e0f7fa;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.9em;
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
- 
-        /* Стили для статусов */
-.new {
-    color: #27ae60;
-    font-weight: bold;
+
+.btn-primary:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
 }
- 
-.confirmed {
-    color: #2980b9;
-    font-weight: bold;
+
+.section-title {
+    position: relative;
+    padding-bottom: 15px;
 }
- 
-.rejected {
-    color: #e74c3c;
-    font-weight: bold;
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background-color: var(--primary-color);
 }
- 
-.canceled {
-    color: #95a5a6;
-    font-weight: bold;
-} 
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .card {
+        margin-bottom: 1.5rem;
+    }
+}

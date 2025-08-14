@@ -1,8 +1,15 @@
 from django.shortcuts import render, HttpResponse
 from .data import orders
+from .models import Master, Review
 
 def landing(request):
-    return render(request, 'core/landing.html')
+    masters = Master.objects.filter(is_active=True)[:6]  # Show first 6 active masters
+    reviews = Review.objects.filter(is_published=True)[:6]  # Show first 6 published reviews
+    context = {
+        'masters': masters,
+        'reviews': reviews,
+    }
+    return render(request, 'core/landing.html', context)
 
 def thanks(request):
     return render(request, 'core/thanks.html')

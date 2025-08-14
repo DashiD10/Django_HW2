@@ -1,9 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Главная страница</title>
-</head>
-<body>
-    <h1>Добро пожаловать!</h1>
-</body>
-</html>
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Главная - BRUTAL Barbershop{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">BRUTAL Barbershop</h1>
+                <p class="lead">Профессиональные барберы с многолетним опытом. Доверьте свою стрижку настоящим мастерам!</p>
+                <a href="#masters" class="btn btn-primary btn-lg">Выбрать мастера</a>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://via.placeholder.com/600x400/333/fff?text=Barbershop" alt="Barbershop" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Masters Section -->
+<section id="masters" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Наши мастера</h2>
+                <p class="lead">Опытные барберы, готовые создать ваш идеальный образ</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for master in masters %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if master.photo %}
+                        <img src="{{ master.photo.url }}" class="card-img-top" alt="{{ master.name }}" style="height: 250px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400x250/6c757d/fff?text={{ master.name|urlencode }}" class="card-img-top" alt="{{ master.name }}" style="height: 250px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ master.name }}</h5>
+                        <p class="card-text">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            Опыт: {{ master.experience }} лет
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                Услуги: {{ master.services.all|join:", "|slice:":50" }}{% if master.services.all|length > 3 %}...{% endif %}
+                            </small>
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="#" class="btn btn-primary w-100">Записаться</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">Мастера пока не добавлены</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<section id="reviews" class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Отзывы клиентов</h2>
+                <p class="lead">Что говорят о нас наши клиенты</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for review in reviews %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 50px; height: 50px;">
+                                <span class="text-white fw-bold">{{ review.client_name|first|default:"A" }}</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">{{ review.client_name|default:"Анонимный клиент" }}</h6>
+                                <small class="text-muted">{{ review.created_at|date:"d.m.Y" }}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star text-muted"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <p class="card-text">{{ review.text|truncatewords:20 }}</p>
+                        
+                        <small class="text-muted">
+                            Мастер: {{ review.master.name }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">Отзывы пока не добавлены</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="mb-4">Готовы изменить свой образ?</h2>
+                <p class="lead mb-4">Запишитесь к лучшим мастерам прямо сейчас</p>
+                <a href="#" class="btn btn-light btn-lg">Записаться онлайн</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
