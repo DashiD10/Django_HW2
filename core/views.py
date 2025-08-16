@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Sum
 from .models import Master, Review, Order
 
 def landing(request):
     masters = Master.objects.filter(is_active=True)[:6]  # Show first 6 active masters
-    reviews = Review.objects.filter(is_published=True)[:6]  # Show first 6 published reviews
+    reviews = Review.objects.filter(is_published=True).select_related('master')[:6]  # Show first 6 published reviews with master info
     context = {
         'masters': masters,
         'reviews': reviews,
@@ -17,7 +17,7 @@ def thanks(request):
 
 @login_required
 def orders_list(request):
-    orders = Order.objects.all().order_by('-date_created')
+    orders = Order.objects.all().select_related('master').prefetch_related('master__services').order_by('-date_created')
     
     # Get search query and checkbox values from GET request
     search_query = request.GET.get('q', '')
@@ -53,13 +53,15 @@ def orders_list(request):
 
 @login_required
 def order_detail(request, pk):
-    order = get_object_or_404(Order, pk=pk)
+    order = get_object_or_404(
+        Order.objects.select_related('master').prefetch_related('master__services').annotate(
+            total_price=Sum('master__services__price')
+        ), 
+        pk=pk
+    )
     context = {
         "order": order,
     }
     return render(request, "core/order_detail.html", context)
-
-
-
 
 # Create your views here.
