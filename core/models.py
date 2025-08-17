@@ -12,9 +12,9 @@ class SiteSettings(models.Model):
 class Order(models.Model):
     STATUS_CHOICES = (
         ("new", "Новый"),
-        ("confirmed", "Подтвержденая"),
-        ("completed", "Завершена"),
-        ("canceled", "Отменена"),
+        ("confirmed", "Подтвержден"),
+        ("completed", "Завершен"),
+        ("canceled", "Отменен"),
     )
 
     name = models.CharField(max_length=100, verbose_name="Имя клиента")
@@ -31,7 +31,7 @@ class Order(models.Model):
         verbose_name_plural = "Заказы"
 
     def __str__(self):
-        return str(f"{self.name} - {self.phone}")
+        return f"{self.name} - {self.phone}"
 
 class Master(models.Model):
     name = models.CharField(max_length=150, verbose_name="Имя")
