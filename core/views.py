@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Q, Sum
 from django.http import JsonResponse
 from .models import Master, Review, Order, Service
@@ -72,6 +73,7 @@ def create_review(request):
         form = ReviewForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Ваш отзыв успешно отправлен! Спасибо за обратную связь.')
             return redirect('thanks')
     else:
         form = ReviewForm()
@@ -88,6 +90,7 @@ def create_order(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.')
             return redirect('thanks')
     else:
         form = OrderForm()
