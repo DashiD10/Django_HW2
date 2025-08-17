@@ -25,6 +25,7 @@ class Order(models.Model):
     date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     master = models.ForeignKey("Master", on_delete=models.SET_NULL, null=True, verbose_name="Мастер")
     appointment_date = models.DateTimeField(verbose_name="Дата и время записи")
+    services = models.ManyToManyField("Service", verbose_name="Услуги")
 
     class Meta:
         verbose_name = "Заказ"
