@@ -7,8 +7,8 @@
 - [x] Maintain existing functionality for context data
 
 ## Next Steps (Part 2-4):
-- [ ] Refactor `orders_list` view to use `ListView`
-- [ ] Refactor `order_detail` view to use `DetailView`
+- [x] Refactor `orders_list` view to use `ListView`
+- [x] Refactor `order_detail` view to use `DetailView`
 - [ ] Refactor `create_review` view to use `CreateView`
 - [ ] Refactor `create_order` view to use `CreateView`
 - [ ] Refactor `get_master_services` API endpoint

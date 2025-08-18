@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Sum
 from django.http import JsonResponse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Master, Review, Order, Service
 from .forms import ReviewForm, OrderForm, MasterServicesForm
 
@@ -134,3 +135,63 @@ def get_master_services(request):
             except Master.DoesNotExist:
                 return JsonResponse({'error': 'Master not found'}, status=404)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+# Part 2: ListView and DetailView classes
+class OrdersListView(LoginRequiredMixin, ListView):
+    """Class-based view for displaying list of orders with search functionality."""
+    model = Order
+    template_name = 'core/orders_list.html'
+    context_object_name = 'orders'
+    ordering = ['-date_created']
+    
+    def get_queryset(self):
+        """Apply search filters based on GET parameters."""
+        queryset = super().get_queryset()
+        queryset = queryset.select_related('master').prefetch_related('master__services')
+        
+        search_query = self.request.GET.get('q', '')
+        search_name = self.request.GET.get('search_name', '')
+        search_phone = self.request.GET.get('search_phone', '')
+        search_comment = self.request.GET.get('search_comment', '')
+        
+        if search_query:
+            q_objects = Q()
+            
+            if search_name:
+                q_objects |= Q(name__icontains=search_query)
+            if search_phone:
+                q_objects |= Q(phone__icontains=search_query)
+            if search_comment:
+                q_objects |= Q(comment__icontains=search_query)
+            
+            if not any([search_name, search_phone, search_comment]):
+                q_objects = Q(name__icontains=search_query)
+            
+            queryset = queryset.filter(q_objects)
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        """Add search parameters to context."""
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')
+        context['search_name'] = self.request.GET.get('search_name', '')
+        context['search_phone'] = self.request.GET.get('search_phone', '')
+        context['search_comment'] = self.request.GET.get('search_comment', '')
+        return context
+
+
+class OrderDetailView(LoginRequiredMixin, DetailView):
+    """Class-based view for displaying detailed information about an order."""
+    model = Order
+    template_name = 'core/order_detail.html'
+    context_object_name = 'order'
+    
+    def get_queryset(self):
+        """Optimize queryset with related data and annotations."""
+        return Order.objects.select_related('master').prefetch_related(
+            'master__services'
+        ).annotate(
+            total_price=Sum('master__services__price')
+        )
