@@ -3,12 +3,30 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Sum
 from django.http import JsonResponse
+from django.views.generic import TemplateView
 from .models import Master, Review, Order, Service
 from .forms import ReviewForm, OrderForm, MasterServicesForm
 
+# Part 1: Simple TemplateView classes
+class LandingView(TemplateView):
+    """Class-based view for the landing page."""
+    template_name = 'core/landing.html'
+    
+    def get_context_data(self, **kwargs):
+        """Add masters and reviews to the context."""
+        context = super().get_context_data(**kwargs)
+        context['masters'] = Master.objects.filter(is_active=True)[:6]
+        context['reviews'] = Review.objects.filter(is_published=True).select_related('master')[:6]
+        return context
+
+class ThanksView(TemplateView):
+    """Class-based view for the thanks page."""
+    template_name = 'core/thanks.html'
+
+# Existing function-based views (to be refactored in subsequent parts)
 def landing(request):
-    masters = Master.objects.filter(is_active=True)[:6]  # Show first 6 active masters
-    reviews = Review.objects.filter(is_published=True).select_related('master')[:6]  # Show first 6 published reviews with master info
+    masters = Master.objects.filter(is_active=True)[:6]
+    reviews = Review.objects.filter(is_published=True).select_related('master')[:6]
     context = {
         'masters': masters,
         'reviews': reviews,
@@ -22,13 +40,11 @@ def thanks(request):
 def orders_list(request):
     orders = Order.objects.all().select_related('master').prefetch_related('master__services').order_by('-date_created')
     
-    # Get search query and checkbox values from GET request
     search_query = request.GET.get('q', '')
-    search_name = request.GET.get('search_name', '')  # Default empty means unchecked
+    search_name = request.GET.get('search_name', '')
     search_phone = request.GET.get('search_phone', '')
     search_comment = request.GET.get('search_comment', '')
     
-    # Build Q objects based on selected checkboxes
     if search_query:
         q_objects = Q()
         
@@ -39,7 +55,6 @@ def orders_list(request):
         if search_comment:
             q_objects |= Q(comment__icontains=search_query)
         
-        # If no checkboxes are selected, default to search by name
         if not any([search_name, search_phone, search_comment]):
             q_objects = Q(name__icontains=search_query)
         
@@ -119,5 +134,3 @@ def get_master_services(request):
             except Master.DoesNotExist:
                 return JsonResponse({'error': 'Master not found'}, status=404)
     return JsonResponse({'error': 'Invalid request'}, status=400)
-
-# Create your views here.
