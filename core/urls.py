@@ -9,8 +9,6 @@ urlpatterns = [
     path('create-review/', views.ReviewCreateView.as_view(), name='create_review'),
     path('create-order/', views.OrderCreateView.as_view(), name='create_order'),
     
-    # Keep function-based views for backward compatibility
-    path('create-review-old/', views.create_review, name='create_review_old'),
-    path('create-order-old/', views.create_order, name='create_order_old'),
+    # API endpoint for AJAX requests
     path('get-master-services/', views.get_master_services, name='get_master_services'),
 ]
