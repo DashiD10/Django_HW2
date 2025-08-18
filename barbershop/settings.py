@@ -320,3 +320,8 @@ JAZZMIN_UI_TWEAKS = {
 
 TELEGRAM_BOT_TOKEN = os.getenv ("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv ("TELEGRAM_CHAT_ID")
+
+# Authentication redirect URLs
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
