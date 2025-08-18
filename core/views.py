@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Sum
 from django.http import JsonResponse
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 from .models import Master, Review, Order, Service
 from .forms import ReviewForm, OrderForm, MasterServicesForm
 
@@ -195,3 +196,42 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         ).annotate(
             total_price=Sum('master__services__price')
         )
+
+
+# Part 3: CreateView classes
+class ReviewCreateView(CreateView):
+    """Class-based view for creating a new review."""
+    model = Review
+    form_class = ReviewForm
+    template_name = 'core/create_review.html'
+    success_url = reverse_lazy('thanks')
+
+    def form_valid(self, form):
+        """Add success message after creating a review."""
+        messages.success(self.request, 'Отзыв успешно создан!')
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        """Add title to context."""
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Оставить отзыв'
+        return context
+
+
+class OrderCreateView(CreateView):
+    """Class-based view for creating a new order."""
+    model = Order
+    form_class = OrderForm
+    template_name = 'core/create_order.html'
+    success_url = reverse_lazy('thanks')
+
+    def form_valid(self, form):
+        """Add success message after creating an order."""
+        messages.success(self.request, 'Заявка успешно создана!')
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        """Add title to context."""
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Записаться на услугу'
+        return context
