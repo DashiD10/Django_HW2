@@ -1,15 +1,17 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
-from .views import UserLoginView, UserRegistrationView, UserLogoutView
+from . import views
+
+app_name = 'users'
 
 urlpatterns = [
-    path('register/', UserRegistrationView.as_view(), name='register'),
-    path('login/', UserLoginView.as_view(), name='login'),
-    path('logout/', UserLogoutView.as_view(), name='logout'),
-    
-    # Password reset URLs
-    path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('register/', views.UserRegisterView.as_view(), name='register'),
+    path('login/', views.UserLoginView.as_view(), name='login'),
+    path('logout/', views.UserLogoutView.as_view(), name='logout'),
+    path('profile/<int:pk>/', views.UserProfileDetailView.as_view(), name='profile_detail'),
+    path('profile/edit/', views.UserProfileUpdateView.as_view(), name='profile_edit'),
+    path('password_change/', views.UserPasswordChangeView.as_view(), name='password_change'),
+    path('password-reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
+    path('password-reset/done/', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
