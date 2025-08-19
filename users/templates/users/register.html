@@ -1,0 +1,9 @@
+{% extends 'users/form.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    {% with title="Регистрация" button_text="Зарегистрироваться" %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}

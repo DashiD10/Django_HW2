@@ -56,10 +56,10 @@
                     <!-- Ссылки для переключения между входом и регистрацией -->
                     <div class="text-center mt-3">
                         {% if title == 'Вход' %}
-                            <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
-                            <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+                            <p>Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+                            <p><a href="{% url 'users:password_reset' %}">Забыли пароль?</a></p>
                         {% else %}
-                            <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+                            <p>Уже есть аккаунт? <a href="{% url 'users:login' %}">Войти</a></p>
                         {% endif %}
                     </div>
                 </div>
