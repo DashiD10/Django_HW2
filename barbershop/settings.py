@@ -325,3 +325,14 @@ TELEGRAM_CHAT_ID = os.getenv ("TELEGRAM_CHAT_ID")
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Email backend for development (sends emails to console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Email settings for password reset
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'
